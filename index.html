@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+    <head>
+      <title>Zen Garden</title>
+      <meta name="description" content="Hello, WebXR! - A-Frame">
+      <!--  note we are using 1.1.0 as most recent -->
+      <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
+      <link rel="icon" href="favicon.ico" type="image/x-icon">
+      <!-- a nice script for setting up an a nice environment for better spatial awareness : https://github.com/supermedium/aframe-environment-component -->
+      <script src="https://unpkg.com/aframe-environment-component@1.3.3/dist/aframe-environment-component.min.js"></script>
+      <script src="scripts/script.js"></script>
+      <script src="scripts/bonsai.js"></script>
+      <script src="scripts/chimes.js"></script>
+      <!-- script for joystick movement on mobile -->
+      <script src="https://cdn.rawgit.com/mrturck/aframe-joystick/master/joystick.min.js"></script>
+    </head>
+
+    <body>
+      <a-scene joystick>
+        <a-assets timeout="10000"></a-assets>
+        <!-- assets -->
+        <a-asset-item id="bonsai_model" response-type="arraybuffer" src="assets/bonsai_tree.glb"></a-asset-item>
+        <a-asset-item id="chimes_model" response-type="arraybuffer" src="assets/chime.glb"></a-asset-item>
+        <a-asset-item id="zen_garden_model" response-type="arraybuffer" src="assets/zen_garden.glb"></a-asset-item>
+        <a-asset-item id="lantern_model" response-type="arraybuffer" src="assets/lantern.glb"></a-asset-item>
+        <a-asset-item id="fountain_model" response-type="arraybuffer" src="assets/fountain.glb"></a-asset-item>
+
+        <audio id="background_music" src="assets/piano_music.mp3" preload="auto" crossorigin="anonymous"></audio>
+        <a-entity sound="src: #background_music; autoplay: true; loop: true"></a-entity>
+
+        <!-- light -->
+        <a-light type="ambient" color="#FFFFFF"></a-light>
+        <a-light type="directional" color="#FFFFFF" position="0 5 5"></a-light>
+
+        <!-- adding a cursor component so that we can click on objects -->
+        <!-- cursor documentation: https://github.com/aframevr/aframe/blob/master/docs/components/cursor.md -->
+        <a-entity cursor="rayOrigin:mouse;" raycaster="far:20; interval:200; objects:.interactive"></a-entity>
+        
+        <!-- camera -->
+        <a-entity id="player" position="0 0 2">
+          <a-camera id="camera" look-controls wasd-controls position="0 1.6 0"></a-camera>
+        </a-entity>
+
+        <!-- <a-entity id="bonsai" position="0 .5 0" rotation="0 0 0" scale=".07 .07 .07" gltf-model="#bonsai_model"></a-entity> -->
+        <!-- <a-entity id="chimes" position="0 1.5 0" rotation="0 0 0" scale="1.5 1.5 1.5" gltf-model="#chimes_model"></a-entity> -->
+        <a-entity id="zen_garden" position="0 -0.03 0" rotation="0 0 0" scale="3 3 3" gltf-model="#zen_garden_model"></a-entity>
+        <a-entity id="lantern" position="0 1.5 -7" rotation="0 0 0" scale="4 4 4" gltf-model="#lantern_model"></a-entity>
+        <a-entity id="fountain" position="-6 0.5 2" rotation="0 0 0" scale="0.5 0.5 0.5" gltf-model="#fountain_model"></a-entity>
+
+        <!-- buttons -->
+        <a-entity id="bonsai_button">
+          <a-entity class="button interactive" 
+                    position="-2 0.8 -2" 
+                    geometry="primitive:cylinder; radius:0.15; height:0.2;"
+                    material="color:rgb(255, 100, 100)"
+                    animation__mouseenter="property:material.color; type:color; to:rgb(255, 0, 0); startEvents:mouseenter; dur:200"
+                    animation__mouseleave="property:material.color; type:color; to:rgb(255, 100, 100); startEvents:mouseleave; dur:200"
+                    animation__click="property:position; from:-2 0.75 -2; to:-2 0.8 -2; startEvents:click; dur:300" shadow onclick="createBonsai()"></a-entity>
+          <a-entity position="-2 0.3 -2" 
+                    geometry="primitive:box; width:0.5; depth:0.5; height:1;" 
+                    material="color:rgb(102, 196, 74)" shadow></a-entity>
+                    
+          <a-entity geometry="primitive:box; width:0.4; height:0.4; depth:0.05;" material="color:white;" position="-2 0.45 -1.7"></a-entity>
+          <!-- text documentation: https://github.com/aframevr/aframe/blob/master/docs/components/text.md -->
+          <a-entity text="value:Create Bonsai tree; 
+           color:black; font:roboto; width:0.4; anchor:left; baseline:top; wrapCount:6;" position="-2.18 0.61 -1.66" ></a-entity>
+        </a-entity>
+
+        <a-entity id="chimes_button">
+          <a-entity class="button interactive" 
+                    position="2 0.8 -2" 
+                    geometry="primitive:cylinder; radius:0.15; height:0.2;"
+                    material="color:rgb(255, 100, 100)"
+                    animation__mouseenter="property:material.color; type:color; to:rgb(255, 0, 0); startEvents:mouseenter; dur:200"
+                    animation__mouseleave="property:material.color; type:color; to:rgb(255, 100, 100); startEvents:mouseleave; dur:200"
+                    animation__click="property:position; from:2 0.75 -2; to:2 0.8 -2; startEvents:click; dur:300" shadow onclick="createChimes()"></a-entity>
+          <a-entity position="2 0.3 -2" 
+                    geometry="primitive:box; width:0.5; depth:0.5; height:1;" 
+                    material="color:rgb(102, 196, 74)" shadow></a-entity>
+
+          <a-entity geometry="primitive:box; width:0.4; height:0.4; depth:0.05;" material="color:white;" position="2 0.45 -1.7"></a-entity>
+          <a-entity text="value:Create wind chimes; 
+            color:black; font:roboto; width:0.4; anchor:left; baseline:top; wrapCount:6;" position="1.81 0.61 -1.66" ></a-entity>
+        </a-entity>
+
+        <!-- instructions -->
+        <a-entity geometry="primitive:box; width:1; height:0.6; depth:0.05;" material="color:white;" position="0 0.65 -2"></a-entity>
+          <a-entity text="value:Press a button to create an element.
+          - 'e' to pick up item, 
+          - 'r' to drop it, 
+          - 'q' to delete it; 
+            color:black; font:roboto; width:1; anchor:left; baseline:top; wrapCount:20;" position="-0.48 0.85 -1.97" ></a-entity>
+          </a-entity>
+
+        <a-entity environment="preset:forest; groundColor:#86CD2B; groundColor2:#7DC028; dressingColor:#61941F; skyColor:#248ED3;"></a-entity>
+      </a-scene>
+    </body>
+</html>
